@@ -1,0 +1,16 @@
+pipeline {
+    agent any //refer to pipeline syntax for other config
+
+    stages {
+        stage("Demo"){
+            steps {
+                myFunc("Hello from demo stage!")
+            }
+        }
+    }
+}
+
+def myFunction(String myText) {
+    def myNumber
+    echo "my text is set to: ${myText}"
+}

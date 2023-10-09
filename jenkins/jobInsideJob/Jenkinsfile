@@ -1,0 +1,39 @@
+pipeline {
+    agent any //refer to pipeline syntax for other config
+    stages {
+        stage("Clean Up"){
+            steps {
+                deleteDir() //see pipeline basic steps for details
+            }
+        }
+        stage("Clone Repo"){
+            steps {
+                sh "git clone https://github.com/jenkins-docs/simple-java-maven-app.git"
+            }
+        }
+        stage("Build"){
+            steps {
+                dir(simple-java-maven-app) {
+                    sh "mvn clean install"
+                } //dir() this is to work inside the repo folder
+            }
+        }
+        stage("Test"){
+            steps {
+                dir(simple-java-maven-app) {
+                    sh "mvn test"
+                }
+            }
+        }
+        stage("Build Remote"){ //RUNNING JOB INSIDE A JOB
+            steps {
+                build 'boolPipeline'
+            }
+        }
+        stage("Build Remote With Param"){ //RUNNING JOB INSIDE A JOB WITH PARAMETER
+            steps {
+                build job: 'boolPipeline', parameters: [[$class: 'BooleanParameterValue', name: 'myBoolean', value: true]]
+            }
+        }
+    }
+}
